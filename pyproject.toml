@@ -3,6 +3,13 @@ name = "quantumvote"
 version = "1.0.0"
 description = "Quantum-safe e-voting with NIST post-quantum cryptography (ML-KEM-768, ML-DSA-65)"
 requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "kyber-py>=1.2",
+    "dilithium-py>=1.5",
+    "cryptography>=43",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

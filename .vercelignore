@@ -1,0 +1,5 @@
+archive/
+tests/
+docs/
+data/
+.venv/

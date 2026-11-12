@@ -75,8 +75,9 @@ Run the tests with `.venv/bin/python -m pytest`.
 ## Deploy on Vercel
 
 1. Push the repository to GitHub.
-2. In Vercel, choose **Add New → Project**, import the repo, and deploy. `vercel.json` serves `web/` as static files and routes `/api/*` to the Python function in `api/index.py`.
-3. Optionally set `QVOTE_ADMIN_PASSWORD` in the project's environment variables.
+2. In Vercel, choose **Add New → Project** and import the repo. If Vercel lists several apps, pick the **FastAPI** one at the root (`/`) with **Import single project**.
+3. Click **Deploy**. Vercel runs the FastAPI app from `api/index.py`, and that app also serves the `web/` pages.
+4. Optionally set `QVOTE_ADMIN_PASSWORD` in the project's environment variables.
 
 On Vercel the database lives in `/tmp`. Serverless instances are short-lived, so the demo election resets when an instance restarts and isn't shared between instances. That's fine for a demo. A real deployment would use a hosted database such as Postgres.
 
