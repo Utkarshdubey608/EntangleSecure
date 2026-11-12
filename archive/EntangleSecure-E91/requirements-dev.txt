@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest>=8.0
+# Optional: independent cross-validation of the simulator (tests/test_qiskit_crossval.py)
+qiskit>=1.0

@@ -1,0 +1,10 @@
+{
+  "outputDirectory": "web",
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api/index" }],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{archive/**,tests/**,docs/**,.venv/**,data/**}"
+    }
+  }
+}

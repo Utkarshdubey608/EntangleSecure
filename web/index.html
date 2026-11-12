@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumVote</title>
+  <meta name="description" content="Quantum-safe elections built on the NIST post-quantum standards ML-KEM-768 and ML-DSA-65.">
+  <meta name="theme-color" content="#0A1428">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A1428'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='%232DD4E8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/" aria-label="QuantumVote home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" rx="8" fill="none" stroke="currentColor" stroke-opacity=".35"/>
+          <circle cx="8" cy="8" r="1.6" fill="currentColor" opacity=".5"/><circle cx="16" cy="8" r="1.6" fill="currentColor" opacity=".5"/><circle cx="24" cy="8" r="1.6" fill="currentColor" opacity=".5"/>
+          <circle cx="8" cy="24" r="1.6" fill="currentColor" opacity=".5"/><circle cx="24" cy="24" r="1.6" fill="currentColor" opacity=".5"/>
+          <path d="M9.5 16.5l4.5 4.5L23 11" fill="none" stroke="#2DD4E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>QuantumVote</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+        <span class="menu-toggle-bars" aria-hidden="true"></span>
+        <span class="sr-only">Menu</span>
+      </button>
+      <nav id="primary-nav" class="nav" aria-label="Primary">
+        <a href="#/" data-route="">Home</a>
+        <a href="#/vote" data-route="vote">Vote</a>
+        <a href="#/bulletin" data-route="bulletin">Bulletin</a>
+        <a href="#/verify" data-route="verify">Verify</a>
+        <a href="#/results" data-route="results">Results</a>
+        <a href="#/lab" data-route="lab">Quantum Lab</a>
+        <a href="#/admin" data-route="admin" class="nav-admin">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-brand">QuantumVote</p>
+      <p>Ballots are encrypted with ML-KEM-768 (FIPS 203) and AES-256-GCM. Receipts and results are signed with ML-DSA-65 (FIPS 204). The public bulletin board is a SHA3-256 hash chain.</p>
+      <p class="footer-note">Academic demonstration. Ballot cryptography runs on the server for this demo; in a deployed system it would run on the voter's own device.</p>
+    </div>
+  </footer>
+
+  <div class="toasts" role="status" aria-live="polite"></div>
+
+  <dialog class="confirm" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 id="confirm-title" class="confirm-title"></h2>
+      <p class="confirm-body"></p>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" value="cancel" type="submit">Cancel</button>
+        <button class="btn btn-primary confirm-ok" value="ok" type="submit">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

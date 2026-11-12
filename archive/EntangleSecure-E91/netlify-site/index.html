@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b16">
+  <meta name="description" content="An interactive browser-based introduction to the E91 quantum key distribution protocol.">
+  <title>EntangleSecure — E91 QKD</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b16;
+      --surface: #0b1220;
+      --raised: #101a2d;
+      --line: #1c2740;
+      --text: #e8eefb;
+      --muted: #91a0b9;
+      --cyan: #22d3ee;
+      --violet: #a78bfa;
+      --amber: #fbbf24;
+      --green: #4ade80;
+      --red: #fb7185;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 75% -20%, #132344 0, transparent 48%), var(--bg);
+      color: var(--text);
+      font: 15px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: auto; }
+    header {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(145,160,185,.13);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 720; letter-spacing: -.02em; }
+    .mark {
+      display: grid; place-items: center; width: 38px; height: 38px;
+      color: var(--cyan); border: 1px solid #22d3ee55; border-radius: 12px;
+      background: #22d3ee10; font-size: 23px;
+    }
+    .brand small { display: block; color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+    nav { display: flex; gap: 8px; }
+    nav a {
+      color: var(--muted); text-decoration: none; padding: 8px 12px;
+      border-radius: 9px; font-size: 13px;
+    }
+    nav a:hover, nav a:focus-visible { color: var(--text); background: var(--raised); outline: none; }
+    .hero { padding: 68px 0 42px; max-width: 760px; }
+    .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 13px 0 16px; max-width: 730px; font-size: clamp(38px, 6vw, 65px); line-height: 1.04; letter-spacing: -.055em; }
+    h1 span { color: var(--cyan); }
+    .lead { max-width: 660px; color: #b7c3d8; font-size: 17px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .chip { border: 1px solid var(--line); background: #0b122099; color: #bdc9dc; padding: 5px 10px; border-radius: 99px; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: 18px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(145deg, #0d1627, var(--surface)); padding: 23px; }
+    .card h2 { margin: 0 0 4px; font-size: 19px; letter-spacing: -.025em; }
+    .sub { margin: 0 0 21px; color: var(--muted); font-size: 13px; }
+    .control { margin: 18px 0; }
+    .control-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    label { font-size: 13px; font-weight: 650; }
+    output { color: var(--cyan); font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+    .range-ends { display: flex; justify-content: space-between; color: #71819e; font-size: 11px; }
+    .switchline { display: flex; justify-content: space-between; align-items: center; margin: 19px 0 4px; }
+    .switchline p { margin: 0; font-size: 13px; font-weight: 650; }
+    .switchline small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .toggle { position: relative; width: 44px; height: 25px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; border-radius: 20px; background: #28354c; cursor: pointer; transition: .2s; }
+    .slider::before { content: ""; position: absolute; width: 17px; height: 17px; left: 4px; top: 4px; border-radius: 50%; background: #b7c3d8; transition: .2s; }
+    .toggle input:checked + .slider { background: #22d3ee77; }
+    .toggle input:checked + .slider::before { transform: translateX(19px); background: white; }
+    .toggle input:focus-visible + .slider { outline: 2px solid white; outline-offset: 3px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; margin-top: 18px; padding: 11px 15px; border: 0; border-radius: 10px;
+      color: #04121b; background: var(--cyan); font-weight: 750; cursor: pointer;
+    }
+    .button:hover { background: #67e8f9; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .metric { padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: #080e1a; }
+    .metric span { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .metric strong { display: block; margin-top: 4px; font: 650 25px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.05em; }
+    .estimate { display: block; margin-top: 3px; color: #71819e; font-size: 10px; }
+    .status { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 12px 14px; border: 1px solid #4ade8038; border-radius: 11px; background: #4ade800b; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px currentColor; }
+    .status strong { display: block; font-size: 13px; }
+    .status small { display: block; color: var(--muted); font-size: 11px; }
+    .status.warn { border-color: #fbbf2438; background: #fbbf240b; }
+    .status.warn .dot { background: var(--amber); }
+    .status.bad { border-color: #fb718538; background: #fb71850b; }
+    .status.bad .dot { background: var(--red); }
+    .chart-card { margin-top: 18px; }
+    .chart-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .legend { color: var(--muted); font-size: 11px; }
+    .legend i { display: inline-block; width: 8px; height: 8px; margin: 0 5px 0 12px; border-radius: 50%; background: var(--cyan); }
+    .legend i:first-child { margin-left: 0; }
+    .legend i.classical { background: var(--amber); }
+    #chart { display: block; width: 100%; height: 196px; margin-top: 8px; }
+    .section { margin-top: 57px; }
+    .section-title { margin-bottom: 20px; }
+    .section-title h2 { margin: 5px 0; font-size: 26px; letter-spacing: -.04em; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .step { padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: #0b1220a8; }
+    .step b { display: block; color: var(--violet); font-size: 11px; letter-spacing: .1em; }
+    .step h3 { margin: 8px 0 5px; font-size: 15px; }
+    .step p { margin: 0; color: var(--muted); font-size: 12px; }
+    .note { margin-top: 18px; padding: 15px 17px; border-left: 2px solid var(--amber); background: #fbbf2409; color: #b8c3d5; font-size: 12px; }
+    footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 58px; padding: 20px 0 30px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    @media (max-width: 760px) {
+      nav a { padding: 7px; font-size: 12px; }
+      .hero { padding-top: 48px; }
+      .grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .wrap { width: min(100% - 28px, 1120px); }
+      header { height: 66px; }
+      nav a:nth-child(3) { display: none; }
+      .hero { padding: 40px 0 30px; }
+      .card { padding: 18px; }
+      .steps { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <div class="brand"><div class="mark" aria-hidden="true">⚛</div><div>EntangleSecure<small>E91 quantum key distribution</small></div></div>
+    <nav aria-label="Main navigation">
+      <a href="#overview">Overview</a><a href="#lab">Bell test</a><a href="#protocol">Protocol</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" id="overview">
+      <div class="eyebrow">Quantum communication · Interactive model</div>
+      <h1>Can a shared secret survive <span>an eavesdropper?</span></h1>
+      <p class="lead">Explore how entanglement and the CHSH Bell inequality help Alice and Bob detect interference while establishing a shared key.</p>
+      <div class="chips"><span class="chip">Ekert 1991 protocol</span><span class="chip">Singlet-state correlations</span><span class="chip">Browser-based demo</span></div>
+    </section>
+
+    <section class="grid" id="lab" aria-label="Interactive Bell test">
+      <div class="card">
+        <h2>Experiment controls</h2>
+        <p class="sub">Change the channel and see how the idealized model responds.</p>
+        <div class="control">
+          <div class="control-top"><label for="pairs">Entangled pairs</label><output id="pairs-out">100,000</output></div>
+          <input id="pairs" type="range" min="1000" max="1000000" step="1000" value="100000">
+          <div class="range-ends"><span>1,000</span><span>1,000,000</span></div>
+        </div>
+        <div class="control">
+          <div class="control-top"><label for="noise">Depolarizing noise per channel</label><output id="noise-out">0%</output></div>
+          <input id="noise" type="range" min="0" max="30" step="1" value="0">
+          <div class="range-ends"><span>0%</span><span>30%</span></div>
+        </div>
+        <div class="switchline">
+          <p>Intercept-resend eavesdropper<small>Eve attacks Bob’s channel</small></p>
+          <label class="toggle" aria-label="Enable Eve"><input id="eve" type="checkbox"><span class="slider"></span></label>
+        </div>
+        <div class="control" id="eve-control" hidden>
+          <div class="control-top"><label for="attack">Fraction of pairs intercepted</label><output id="attack-out">100%</output></div>
+          <input id="attack" type="range" min="0" max="100" step="1" value="100">
+          <div class="range-ends"><span>0%</span><span>100%</span></div>
+        </div>
+        <button class="button" id="run">↻ &nbsp; Update model</button>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Model results</h2>
+          <p class="sub">Expected values from the simplified E91 correlation model.</p>
+          <div class="metrics">
+            <div class="metric"><span>Expected CHSH S</span><strong id="s-value">2.828</strong><small class="estimate" id="s-margin">Approx. 95% margin: ±0.000</small></div>
+            <div class="metric"><span>Key-round QBER</span><strong id="qber-value">0.0%</strong></div>
+            <div class="metric"><span>Classical bound</span><strong>2.000</strong></div>
+            <div class="metric"><span>Quantum bound</span><strong>2.828</strong></div>
+          </div>
+          <div class="status" id="verdict" role="status" aria-live="polite">
+            <span class="dot"></span><div><strong id="verdict-title">Bell violation expected</strong><small id="verdict-copy">Correlations exceed the classical bound in this model.</small></div>
+          </div>
+          <div class="note">These are theoretical model estimates, not sampled measurements or a security certification. See the project’s full Python app for the detailed simulation.</div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><h2>Bell inequality</h2><p class="sub" style="margin-bottom:0">Estimated S compared with the classical limit</p></div><div class="legend"><i></i>Estimated S <i class="classical"></i>Classical limit</div></div>
+          <svg id="chart" viewBox="0 0 520 196" role="img" aria-label="Chart showing the estimated CHSH value and classical bound"></svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="protocol">
+      <div class="section-title"><div class="eyebrow">The E91 protocol</div><h2>From entangled pairs to a shared key</h2></div>
+      <div class="steps">
+        <article class="step"><b>01 · GENERATE</b><h3>Create a singlet pair</h3><p>A source prepares two particles in an entangled state and sends one to Alice and one to Bob.</p></article>
+        <article class="step"><b>02 · MEASURE</b><h3>Choose settings at random</h3><p>Alice and Bob independently choose measurement directions and record their outcomes.</p></article>
+        <article class="step"><b>03 · TEST</b><h3>Check Bell correlations</h3><p>They disclose a subset of settings and estimate CHSH S. Eavesdropping can weaken the violation.</p></article>
+        <article class="step"><b>04 · DISTILL</b><h3>Keep or abort</h3><p>If checks pass, compatible rounds can be processed into a key; otherwise they abort.</p></article>
+      </div>
+      <div class="note"><strong>Scope:</strong> This Netlify bundle is a static educational demo. It does not include the Python app’s full density-matrix engine, finite-sample measurement records, Cascade error correction, Toeplitz privacy amplification, PDF/CSV reports, or reproducible run history. The original app remains in the project folder.</div>
+    </section>
+  </main>
+  <footer class="wrap"><span>EntangleSecure · E91 QKD educational demo</span><span>No server or build step required · Static HTML/CSS/JavaScript</span></footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const rad = Math.PI / 180;
+    const alice = [0, 45, 90];
+    const bob = [45, 90, 135];
+
+    function model() {
+      const visibility = (1 - Number($("noise").value) / 100) ** 2;
+      const attack = $("eve").checked ? Number($("attack").value) / 100 : 0;
+      const corr = (a, b) => {
+        const ideal = -Math.cos((a - b) * rad);
+        const eveMean = bob.reduce((sum, theta) =>
+          sum - Math.cos((a - theta) * rad) * Math.cos((b - theta) * rad), 0) / bob.length;
+        return visibility * ((1 - attack) * ideal + attack * eveMean);
+      };
+      const terms = [corr(alice[2], bob[0]), corr(alice[2], bob[2]),
+        corr(alice[0], bob[0]), corr(alice[0], bob[2])];
+      const signedS = terms[0] + terms[1] + terms[2] - terms[3];
+      const s = Math.abs(signedS);
+      const pairsPerSetting = Number($("pairs").value) / 9;
+      const sigmaS = Math.sqrt(terms.reduce((sum, e) => sum + (1 - e * e) / pairsPerSetting, 0));
+      const margin = 1.96 * sigmaS;
+      const qber = ((1 + corr(alice[1], bob[0])) + (1 + corr(alice[2], bob[1]))) / 4;
+      $("s-value").textContent = s.toFixed(3);
+      $("s-margin").textContent = "Approx. 95% margin: ±" + margin.toFixed(3);
+      $("qber-value").textContent = (qber * 100).toFixed(1) + "%";
+      const verdict = $("verdict");
+      const clearViolation = s - margin > 2;
+      verdict.className = "status" + (clearViolation ? "" : s + margin > 2 ? " warn" : " bad");
+      $("verdict-title").textContent = clearViolation ? "Bell violation likely" : s + margin > 2 ? "Inconclusive near the classical bound" : "No Bell violation expected";
+      $("verdict-copy").textContent = clearViolation
+        ? "The model's approximate 95% interval remains above the classical bound."
+        : s + margin > 2
+          ? "The approximate 95% interval overlaps the classical bound."
+          : "The model's approximate 95% interval is below the classical bound.";
+      drawChart(s);
+    }
+
+    function drawChart(s) {
+      const svg = $("chart");
+      const min = 0, max = 3.2, left = 44, right = 504, top = 17, bottom = 164;
+      const y = (v) => bottom - ((v - min) / (max - min)) * (bottom - top);
+      const x = (v) => left + (v / max) * (right - left);
+      const classicalY = y(2);
+      svg.innerHTML = `
+        <line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#293651"/>
+        <line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#293651"/>
+        <line x1="${left}" y1="${classicalY}" x2="${right}" y2="${classicalY}" stroke="#fbbf24" stroke-dasharray="5 5" opacity=".8"/>
+        <text x="5" y="${classicalY + 4}" fill="#91a0b9" font-size="11">2.0</text>
+        <text x="7" y="${top + 4}" fill="#91a0b9" font-size="11">3.2</text>
+        <text x="${left}" y="185" fill="#71819e" font-size="10">0</text>
+        <text x="${right - 20}" y="185" fill="#71819e" font-size="10">3.2</text>
+        <line x1="${x(s)}" y1="${top}" x2="${x(s)}" y2="${bottom}" stroke="#22d3ee" stroke-width="2"/>
+        <circle cx="${x(s)}" cy="${y(s)}" r="7" fill="#22d3ee" stroke="#07111a" stroke-width="3"/>
+        <text x="${Math.min(x(s) + 10, right - 46)}" y="${y(s) - 12}" fill="#22d3ee" font-size="13" font-weight="700">S = ${s.toFixed(3)}</text>`;
+    }
+
+    $("pairs").addEventListener("input", () => {
+      $("pairs-out").textContent = Number($("pairs").value).toLocaleString();
+      model();
+    });
+    $("noise").addEventListener("input", () => $("noise-out").textContent = $("noise").value + "%");
+    $("attack").addEventListener("input", () => $("attack-out").textContent = $("attack").value + "%");
+    $("eve").addEventListener("change", () => {
+      $("eve-control").hidden = !$("eve").checked;
+      model();
+    });
+    $("run").addEventListener("click", model);
+    $("noise").addEventListener("input", model);
+    $("attack").addEventListener("input", model);
+    model();
+  </script>
+</body>
+</html>

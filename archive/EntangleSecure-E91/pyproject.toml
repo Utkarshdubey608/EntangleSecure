@@ -1,0 +1,13 @@
+[project]
+name = "entanglesecure"
+version = "1.0.0"
+description = "E91 entanglement-based QKD simulation with CHSH Bell inequality analysis"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 140
